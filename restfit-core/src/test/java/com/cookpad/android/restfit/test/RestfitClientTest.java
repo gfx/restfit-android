@@ -15,8 +15,9 @@ import java.util.concurrent.TimeUnit;
 import rx.Single;
 import rx.observers.TestSubscriber;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class RestfitClientTest {
 
@@ -79,7 +80,8 @@ public class RestfitClientTest {
                 })
                 .build();
 
-        RestfitRequest request = new RestfitRequest();
+        RestfitRequest request = new RestfitRequest.Builder()
+                .build();
 
         TestSubscriber<RestfitResponse> testSubscriber = TestSubscriber.create();
 
