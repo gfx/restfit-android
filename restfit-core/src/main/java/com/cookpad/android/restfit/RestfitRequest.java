@@ -2,7 +2,7 @@ package com.cookpad.android.restfit;
 
 import com.cookpad.android.restfit.internal.RestfitParcelable;
 
-import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 public class RestfitRequest extends RestfitParcelable {
 
@@ -10,7 +10,7 @@ public class RestfitRequest extends RestfitParcelable {
 
     final String url;
 
-    final RestfitRequestHeaders headers;
+    final RestfitHttpHeaders headers;
 
     final RestfitRequestBody body;
 
@@ -27,41 +27,31 @@ public class RestfitRequest extends RestfitParcelable {
 
         String url;
 
-        RestfitRequestHeaders headers = new RestfitRequestHeaders();
+        RestfitHttpHeaders headers = new RestfitHttpHeaders();
 
         RestfitRequestBody body;
 
-        public Builder method(String method) {
+        public Builder method(@NonNull String method) {
             this.method = method;
             return this;
         }
 
-        public Builder url(String url) {
+        public Builder url(@NonNull String url) {
             this.url = url;
             return this;
         }
 
-        Builder header(String key, String value) {
+        public Builder header(@NonNull String key, @NonNull String value) {
+            headers.put(key, value);
             return this;
         }
 
+        @NonNull
         public RestfitRequest build() {
             return new RestfitRequest(this);
         }
     }
 
-    // parcebale
 
-    public static final Creator<RestfitRequest> CREATOR = new Creator<RestfitRequest>() {
-
-        @Override
-        public RestfitRequest createFromParcel(Parcel source) {
-            return RestfitRequest.readFromParcel(source, null);
-        }
-
-        @Override
-        public RestfitRequest[] newArray(int size) {
-            return new RestfitRequest[size];
-        }
-    };
+    public static final Creator<RestfitRequest> CREATOR = new EasyCreator<>(RestfitRequest.class);
 }

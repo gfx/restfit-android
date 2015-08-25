@@ -15,9 +15,8 @@ import java.util.concurrent.TimeUnit;
 import rx.Single;
 import rx.observers.TestSubscriber;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class RestfitClientTest {
 
@@ -29,6 +28,8 @@ public class RestfitClientTest {
             return Single.error(new AssertionError("never called"));
         }
     }
+
+    RestfitResponse response;
 
     @Test
     public void testCreateInstanceWithoutUserAgent() throws Exception {
@@ -64,10 +65,8 @@ public class RestfitClientTest {
         assertThat(client.getUserAgent(), is("RestfitTest/1.0"));
     }
 
-
     @Test
     public void testCallRequest() throws Exception {
-        final RestfitResponse response = new RestfitResponse();
 
         RestfitClient client = new RestfitClient.Builder()
                 .userAgent("RestfitTest/1.0")
@@ -81,6 +80,12 @@ public class RestfitClientTest {
                 .build();
 
         RestfitRequest request = new RestfitRequest.Builder()
+                .method("GET")
+                .url("http://example.com/")
+                .build();
+
+        response = new RestfitResponse.Builder()
+                .request(request)
                 .build();
 
         TestSubscriber<RestfitResponse> testSubscriber = TestSubscriber.create();

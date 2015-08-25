@@ -11,14 +11,14 @@ public class RestfitClient {
 
     final boolean debug;
 
-    final RestfitRequestHeaders headers = new RestfitRequestHeaders();
+    final RestfitHttpHeaders headers;
 
     final RestfitHttpHandler httpHandler;
 
     final ExecutorService executorService;
 
     RestfitClient(Builder builder) {
-        headers.setUserAgent(builder.userAgent);
+        headers = builder.requestHeaders;
         httpHandler = builder.httpHandler;
         executorService = builder.executorService;
         debug = builder.debug;
@@ -49,14 +49,14 @@ public class RestfitClient {
 
         boolean debug = false;
 
-        RestfitHttpHandler httpHandler;
+        RestfitHttpHeaders requestHeaders = new RestfitHttpHeaders();
 
-        String userAgent;
+        RestfitHttpHandler httpHandler;
 
         ExecutorService executorService;
 
         public Builder userAgent(@NonNull String userAgent) {
-            this.userAgent = userAgent;
+            this.requestHeaders.put(RestfitHttpHeaders.KEY_USER_AGENT, userAgent);
             return this;
         }
 
@@ -78,7 +78,7 @@ public class RestfitClient {
         }
 
         void validate() {
-            if (userAgent == null) {
+            if (!requestHeaders.contains(RestfitHttpHeaders.KEY_USER_AGENT)) {
                 throw new IllegalArgumentException("No userAgent specified");
             }
             if (httpHandler == null) {

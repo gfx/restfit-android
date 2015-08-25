@@ -2,20 +2,31 @@ package com.cookpad.android.restfit;
 
 import com.cookpad.android.restfit.internal.RestfitParcelable;
 
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-public class RestfitRequestHeaders extends RestfitParcelable {
+public class RestfitHttpHeaders extends RestfitParcelable {
 
     public static String KEY_USER_AGENT = "User-Agent";
 
     final Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    public RestfitRequestHeaders() {
+    public RestfitHttpHeaders() {
 
+    }
+
+    public void put(@NonNull String key, @NonNull String value) {
+        headers.put(key, value);
+    }
+
+    public String get(@NonNull String key) {
+        return headers.get(key);
+    }
+
+    public boolean contains(@NonNull String key) {
+        return headers.containsKey(key);
     }
 
     public void setUserAgent(@NonNull String userAgent) {
@@ -30,20 +41,5 @@ public class RestfitRequestHeaders extends RestfitParcelable {
         return headers;
     }
 
-    // Parcelable
-
-
-    public static final Creator<RestfitRequestHeaders> CREATOR
-            = new Creator<RestfitRequestHeaders>() {
-
-        @Override
-        public RestfitRequestHeaders createFromParcel(Parcel source) {
-            return RestfitRequestHeaders.readFromParcel(source, null);
-        }
-
-        @Override
-        public RestfitRequestHeaders[] newArray(int size) {
-            return new RestfitRequestHeaders[size];
-        }
-    };
+    public static final Creator<RestfitHttpHeaders> CREATOR = new EasyCreator<>(RestfitHttpHeaders.class);
 }
