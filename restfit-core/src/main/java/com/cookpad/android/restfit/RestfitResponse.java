@@ -8,7 +8,9 @@ public class RestfitResponse extends RestfitParcelable {
 
     final RestfitRequest request;
 
-    final int status;
+    final int statusCode;
+
+    final String statusMessage;
 
     final RestfitHttpHeaders headers;
 
@@ -16,7 +18,8 @@ public class RestfitResponse extends RestfitParcelable {
 
     public RestfitResponse(Builder builder) {
         request = builder.request;
-        status = builder.status;
+        statusCode = builder.statusCode;
+        statusMessage = builder.statusMessage;
         headers = builder.headers;
         body = builder.body;
     }
@@ -25,7 +28,9 @@ public class RestfitResponse extends RestfitParcelable {
 
         RestfitRequest request;
 
-        int status;
+        int statusCode;
+
+        String statusMessage;
 
         RestfitHttpHeaders headers = new RestfitHttpHeaders();
 
@@ -36,8 +41,9 @@ public class RestfitResponse extends RestfitParcelable {
             return this;
         }
 
-        public Builder status(int status) {
-            this.status = status;
+        public Builder status(int statusCode, String statusMessage) {
+            this.statusCode = statusCode;
+            this.statusMessage = statusMessage;
             return this;
         }
 

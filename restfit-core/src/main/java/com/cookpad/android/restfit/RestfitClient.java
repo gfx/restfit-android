@@ -26,7 +26,7 @@ public class RestfitClient {
 
     @NonNull
     public String getUserAgent() {
-        return headers.getUserAgent();
+        return headers.get(RestfitHttpHeaders.KEY_USER_AGENT);
     }
 
     @NonNull

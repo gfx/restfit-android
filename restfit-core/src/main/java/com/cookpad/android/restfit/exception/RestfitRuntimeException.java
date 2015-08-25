@@ -1,4 +1,4 @@
-package com.cookpad.android.restfit;
+package com.cookpad.android.restfit.exception;
 
 public class RestfitRuntimeException extends RuntimeException {
 

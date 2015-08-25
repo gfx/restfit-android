@@ -4,10 +4,11 @@ import com.cookpad.android.restfit.internal.RestfitParcelable;
 
 import android.support.annotation.NonNull;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class RestfitHttpHeaders extends RestfitParcelable {
+public class RestfitHttpHeaders extends RestfitParcelable implements Iterable<Map.Entry<String, String>> {
 
     public static String KEY_USER_AGENT = "User-Agent";
 
@@ -29,17 +30,14 @@ public class RestfitHttpHeaders extends RestfitParcelable {
         return headers.containsKey(key);
     }
 
-    public void setUserAgent(@NonNull String userAgent) {
-        headers.put(KEY_USER_AGENT, userAgent);
-    }
-
-    public String getUserAgent() {
-        return headers.get(KEY_USER_AGENT);
-    }
-
     public Map<String, String> getRawHeaders() {
         return headers;
     }
 
     public static final Creator<RestfitHttpHeaders> CREATOR = new EasyCreator<>(RestfitHttpHeaders.class);
+
+    @Override
+    public Iterator<Map.Entry<String, String>> iterator() {
+        return headers.entrySet().iterator();
+    }
 }
