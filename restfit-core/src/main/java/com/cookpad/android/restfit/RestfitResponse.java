@@ -26,6 +26,26 @@ public class RestfitResponse extends RestfitParcelable {
         body = builder.body;
     }
 
+    public RestfitRequest getRequest() {
+        return request;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public RestfitHttpHeaders getHeaders() {
+        return headers;
+    }
+
+    public RestfitResponseBody getBody() {
+        return body;
+    }
+
     public static class Builder {
 
         RestfitRequest request;

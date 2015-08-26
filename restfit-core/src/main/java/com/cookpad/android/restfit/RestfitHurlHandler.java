@@ -1,6 +1,7 @@
 package com.cookpad.android.restfit;
 
 import com.cookpad.android.restfit.exception.RestfitRequestException;
+import com.cookpad.android.restfit.exception.RestfitRuntimeException;
 
 import android.support.annotation.NonNull;
 
@@ -61,10 +62,17 @@ public class RestfitHurlHandler implements RestfitHttpHandler {
     }
 
     Map<String, String> extractLastItems(Map<String, List<String>> raw) {
+        if (raw == null) {
+            throw new RestfitRuntimeException("Headers must not be null");
+        }
         Map<String, String> extracted = new HashMap<>();
 
         for (Map.Entry<String, List<String>> entry : raw.entrySet()) {
             String key = entry.getKey();
+            if (key == null) {
+                // key is null for the status line. e.g. ["HTTP/1.1 200 OK"]
+                continue;
+            }
             List<String> values = entry.getValue();
             extracted.put(key, values.get(values.size() - 1));
         }

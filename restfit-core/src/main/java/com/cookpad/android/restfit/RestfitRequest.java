@@ -4,6 +4,7 @@ import com.cookpad.android.restfit.internal.RestfitParcelable;
 
 import android.support.annotation.NonNull;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class RestfitRequest extends RestfitParcelable {
@@ -70,6 +71,11 @@ public class RestfitRequest extends RestfitParcelable {
 
         public Builder method(@NonNull String method) {
             this.method = method;
+            return this;
+        }
+
+        public Builder url(@NonNull URL url) {
+            this.url = url.toString();
             return this;
         }
 

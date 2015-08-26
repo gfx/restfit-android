@@ -34,7 +34,7 @@ public class RestfitResponseBody extends RestfitParcelable {
     }
 
     @NonNull
-    public synchronized String getAsStrinSyncg() throws RestfitReadResponseException {
+    public synchronized String getAsStringSync() throws RestfitReadResponseException {
         if (stringBuffer != null) {
             return stringBuffer;
         } else if (byteBuffer != null) {
