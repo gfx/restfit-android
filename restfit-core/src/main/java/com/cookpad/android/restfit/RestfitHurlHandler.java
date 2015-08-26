@@ -5,7 +5,9 @@ import com.cookpad.android.restfit.exception.RestfitRuntimeException;
 
 import android.support.annotation.NonNull;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -39,8 +41,16 @@ public class RestfitHurlHandler implements RestfitHttpHandler {
                     conn.setReadTimeout(request.getReadTimeoutMillis());
 
                     // wait for a response
+                    InputStream in;
 
-                    int statusCode = conn.getResponseCode();
+                    int statusCode;
+                    try {
+                        statusCode = conn.getResponseCode();
+                        in = statusCode < 400 ? conn.getInputStream() : conn.getErrorStream();
+                    } catch (FileNotFoundException e) {
+                        statusCode = 404;
+                        in = conn.getErrorStream();
+                    }
                     if (statusCode == -1) {
                         subscriber.onError(new RestfitRequestException(request,
                                 new IOException("Could not receive response code from HttpUrlConnection")));
@@ -50,7 +60,7 @@ public class RestfitHurlHandler implements RestfitHttpHandler {
                     RestfitResponse response = new RestfitResponse.Builder()
                             .status(statusCode, statusMessage)
                             .headers(extractLastItems(conn.getHeaderFields()))
-                            .body(new RestfitResponseBody(request, conn.getInputStream()))
+                            .body(new RestfitResponseBody(request, in))
                             .build();
                     subscriber.onSuccess(response);
 
