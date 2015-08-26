@@ -4,6 +4,8 @@ import com.cookpad.android.restfit.internal.RestfitParcelable;
 
 import android.support.annotation.NonNull;
 
+import java.util.Map;
+
 public class RestfitResponse extends RestfitParcelable {
 
     final RestfitRequest request;
@@ -49,6 +51,16 @@ public class RestfitResponse extends RestfitParcelable {
 
         public Builder header(@NonNull String key, @NonNull String value) {
             headers.put(key, value);
+            return this;
+        }
+
+        public Builder headers(@NonNull Map<String, String> headers) {
+            this.headers.putAll(headers);
+            return this;
+        }
+
+        public Builder body(@NonNull RestfitResponseBody body) {
+            this.body = body;
             return this;
         }
 

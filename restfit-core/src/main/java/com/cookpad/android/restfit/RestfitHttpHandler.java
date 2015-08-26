@@ -7,6 +7,6 @@ import rx.Single;
 public interface RestfitHttpHandler {
 
     @NonNull
-    Single<RestfitResponse> execute(@NonNull RestfitRequest request);
+    Single<RestfitResponse> perform(@NonNull RestfitRequest request);
 
 }

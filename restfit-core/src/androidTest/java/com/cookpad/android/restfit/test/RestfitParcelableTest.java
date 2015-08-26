@@ -44,6 +44,4 @@ public class RestfitParcelableTest {
 
         assertThat(reload(a), is(a));
     }
-
-
 }

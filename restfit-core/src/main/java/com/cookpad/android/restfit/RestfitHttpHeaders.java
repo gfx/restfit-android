@@ -22,6 +22,10 @@ public class RestfitHttpHeaders extends RestfitParcelable implements Iterable<Ma
         headers.put(key, value);
     }
 
+    public void putAll(@NonNull Map<String, String> map) {
+        headers.putAll(map);
+    }
+
     public String get(@NonNull String key) {
         return headers.get(key);
     }

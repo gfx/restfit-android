@@ -24,7 +24,7 @@ public class RestfitClientTest {
 
         @NonNull
         @Override
-        public Single<RestfitResponse> execute(@NonNull RestfitRequest request) {
+        public Single<RestfitResponse> perform(@NonNull RestfitRequest request) {
             return Single.error(new AssertionError("never called"));
         }
     }
@@ -73,7 +73,7 @@ public class RestfitClientTest {
                 .httpHandler(new RestfitHttpHandler() {
                     @NonNull
                     @Override
-                    public Single<RestfitResponse> execute(@NonNull RestfitRequest request) {
+                    public Single<RestfitResponse> perform(@NonNull RestfitRequest request) {
                         return Single.just(response);
                     }
                 })

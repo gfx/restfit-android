@@ -23,17 +23,17 @@ public class RestfitResponseTest {
 
         a = new RestfitResponse.Builder()
                 .request(r)
-                .status(200)
+                .status(200, "OK")
                 .build();
 
         b = new RestfitResponse.Builder()
                 .request(r)
-                .status(200)
+                .status(200, "OK")
                 .build();
 
         c = new RestfitResponse.Builder()
                 .request(r)
-                .status(201)
+                .status(201, "OK")
                 .build();
     }
 

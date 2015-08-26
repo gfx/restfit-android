@@ -38,7 +38,7 @@ public class RestfitClient {
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
-                        httpHandler.execute(request).subscribe(subscriber);
+                        httpHandler.perform(request).subscribe(subscriber);
                     }
                 });
             }

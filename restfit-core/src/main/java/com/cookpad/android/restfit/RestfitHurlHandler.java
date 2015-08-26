@@ -5,9 +5,10 @@ import com.cookpad.android.restfit.exception.RestfitRequestException;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import rx.Single;
@@ -20,8 +21,7 @@ public class RestfitHurlHandler implements RestfitHttpHandler {
 
     @NonNull
     @Override
-    public Single<RestfitResponse> execute(@NonNull final RestfitRequest request) {
-
+    public Single<RestfitResponse> perform(@NonNull final RestfitRequest request) {
         return Single.create(new Single.OnSubscribe<RestfitResponse>() {
             @Override
             public void call(SingleSubscriber<? super RestfitResponse> subscriber) {
@@ -46,10 +46,10 @@ public class RestfitHurlHandler implements RestfitHttpHandler {
                     }
                     String statusMessage = conn.getResponseMessage();
 
-                    InputStream in = conn.getInputStream();
-
                     RestfitResponse response = new RestfitResponse.Builder()
                             .status(statusCode, statusMessage)
+                            .headers(extractLastItems(conn.getHeaderFields()))
+                            .body(new RestfitResponseBody(request, conn.getInputStream()))
                             .build();
                     subscriber.onSuccess(response);
 
@@ -58,5 +58,17 @@ public class RestfitHurlHandler implements RestfitHttpHandler {
                 }
             }
         });
+    }
+
+    Map<String, String> extractLastItems(Map<String, List<String>> raw) {
+        Map<String, String> extracted = new HashMap<>();
+
+        for (Map.Entry<String, List<String>> entry : raw.entrySet()) {
+            String key = entry.getKey();
+            List<String> values = entry.getValue();
+            extracted.put(key, values.get(values.size() - 1));
+        }
+
+        return extracted;
     }
 }
