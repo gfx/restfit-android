@@ -2,6 +2,7 @@ package com.cookpad.android.restfit;
 
 import com.cookpad.android.restfit.internal.RestfitParcelable;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import java.net.URL;
@@ -23,11 +24,18 @@ public class RestfitRequest extends RestfitParcelable {
 
     RestfitRequest(Builder builder) {
         method = builder.method;
-        url = builder.url;
+        url = buildUrl(builder.url, builder.queryString);
         headers = builder.headers;
         body = builder.body;
         connectTimeoutMillis = builder.connectTimeoutMillis;
         readTimeoutMillis = builder.readTimeoutMillis;
+    }
+
+    static String buildUrl(Uri url, RestfitQueryString queryString) {
+        for (String key : url.getQueryParameterNames()) {
+            queryString.put(key, url.getQueryParameter(key));
+        }
+        return ""; // FIXME
     }
 
     public String getMethod() {
@@ -58,7 +66,9 @@ public class RestfitRequest extends RestfitParcelable {
 
         String method;
 
-        String url;
+        Uri url;
+
+        RestfitQueryString queryString = new RestfitQueryString();
 
         RestfitHttpHeaders headers = new RestfitHttpHeaders();
 
@@ -75,12 +85,22 @@ public class RestfitRequest extends RestfitParcelable {
         }
 
         public Builder url(@NonNull URL url) {
-            this.url = url.toString();
+            this.url = Uri.parse(url.toString());
             return this;
         }
 
         public Builder url(@NonNull String url) {
+            this.url = Uri.parse(url);
+            return this;
+        }
+
+        public Builder url(@NonNull Uri url) {
             this.url = url;
+            return this;
+        }
+
+        public Builder queryString(@NonNull RestfitQueryString queryString) {
+            this.queryString = queryString;
             return this;
         }
 

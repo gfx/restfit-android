@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 import rx.Single;
 import rx.SingleSubscriber;
@@ -35,6 +36,8 @@ public class RestfitResponseBody extends RestfitParcelable {
 
     @NonNull
     public synchronized String getAsStringSync() throws RestfitReadResponseException {
+        RestfitUtils.assertNotOnMainThread();
+
         if (stringBuffer != null) {
             return stringBuffer;
         } else if (byteBuffer != null) {
@@ -42,10 +45,9 @@ public class RestfitResponseBody extends RestfitParcelable {
             return stringBuffer;
         }
 
-        char[] buffer = new char[4096];
+        char[] buffer = new char[RestfitUtils.BUFFER_SIZE];
         StringBuilder result = new StringBuilder();
-
-        InputStreamReader reader = new InputStreamReader(inputStream, RestfitUtils.DEFAULT_ENCODING);
+        Reader reader = new InputStreamReader(inputStream, RestfitUtils.DEFAULT_ENCODING);
 
         for (; ; ) {
             try {
@@ -74,7 +76,11 @@ public class RestfitResponseBody extends RestfitParcelable {
         return Single.create(new Single.OnSubscribe<String>() {
             @Override
             public void call(SingleSubscriber<? super String> singleSubscriber) {
-
+                try {
+                    singleSubscriber.onSuccess(getAsStringSync());
+                } catch (RestfitReadResponseException e) {
+                    singleSubscriber.onError(e);
+                }
             }
         });
     }

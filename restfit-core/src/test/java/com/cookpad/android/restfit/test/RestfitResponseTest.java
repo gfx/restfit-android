@@ -5,10 +5,17 @@ import com.cookpad.android.restfit.RestfitResponse;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
+
+import android.os.Build;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+@Config(sdk = Build.VERSION_CODES.JELLY_BEAN)
+@RunWith(RobolectricTestRunner.class)
 public class RestfitResponseTest {
 
     RestfitResponse a, b, c;
