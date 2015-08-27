@@ -1,37 +1,56 @@
 package com.cookpad.android.restfit.example;
 
+import com.cookpad.android.restfit.RestfitClient;
+import com.cookpad.android.restfit.RestfitHurlHandler;
+import com.cookpad.android.restfit.RestfitRequest;
+import com.cookpad.android.restfit.RestfitResponse;
+import com.cookpad.android.rxt4a.schedulers.AndroidSchedulers;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.TextView;
+
+import rx.SingleSubscriber;
 
 public class MainActivity extends AppCompatActivity {
+
+    RestfitClient client;
+
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textView = (TextView) findViewById(R.id.content);
+
+        client = new RestfitClient.Builder()
+                .httpHandler(new RestfitHurlHandler())
+                .userAgent("RestfitExample/1.0")
+                .debug(BuildConfig.DEBUG)
+                .build();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+    protected void onResume() {
+        super.onResume();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        client.call(new RestfitRequest.Builder()
+                .method("GET")
+                .url("http://example.com")
+                .build())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<RestfitResponse>() {
+                    @Override
+                    public void onSuccess(RestfitResponse value) {
+                        textView.setText(value.toString());
+                    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+                    @Override
+                    public void onError(Throwable error) {
+                        textView.setText(error.toString());
+                    }
+                });
     }
 }
