@@ -1,5 +1,7 @@
 package com.cookpad.android.restfit;
 
+import com.cookpad.android.restfit.internal.RestfitUtils;
+
 import android.support.annotation.NonNull;
 
 import java.util.concurrent.ExecutorService;
@@ -86,7 +88,7 @@ public class RestfitClient {
             }
 
             if (executorService == null) {
-                executorService = RestfitExecutors.createDefaultThreadPoolExecutor();
+                executorService = RestfitUtils.createDefaultThreadPoolExecutor();
             }
         }
     }

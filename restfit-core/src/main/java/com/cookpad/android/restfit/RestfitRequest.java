@@ -1,6 +1,6 @@
 package com.cookpad.android.restfit;
 
-import com.cookpad.android.restfit.internal.RestfitParcelable;
+import com.cookpad.android.restfit.internal.RestfitBaseModel;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -8,11 +8,11 @@ import android.support.annotation.NonNull;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-public class RestfitRequest extends RestfitParcelable {
+public class RestfitRequest extends RestfitBaseModel {
 
     final String method;
 
-    final String url;
+    final Uri url;
 
     final RestfitHttpHeaders headers;
 
@@ -31,18 +31,20 @@ public class RestfitRequest extends RestfitParcelable {
         readTimeoutMillis = builder.readTimeoutMillis;
     }
 
-    static String buildUrl(Uri url, RestfitQueryString queryString) {
+    static Uri buildUrl(Uri url, RestfitQueryString queryString) {
         for (String key : url.getQueryParameterNames()) {
             queryString.put(key, url.getQueryParameter(key));
         }
-        return ""; // FIXME
+        return url.buildUpon()
+                .encodedQuery(queryString.buildQueryString())
+                .build();
     }
 
     public String getMethod() {
         return method;
     }
 
-    public String getUrl() {
+    public Uri getUrl() {
         return url;
     }
 

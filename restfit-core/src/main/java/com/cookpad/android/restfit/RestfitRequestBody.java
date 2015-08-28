@@ -1,8 +1,8 @@
 package com.cookpad.android.restfit;
 
-import com.cookpad.android.restfit.internal.RestfitParcelable;
+import com.cookpad.android.restfit.internal.RestfitBaseModel;
 
-public class RestfitRequestBody extends RestfitParcelable {
+public class RestfitRequestBody extends RestfitBaseModel {
 
     public RestfitRequestBody() {
 

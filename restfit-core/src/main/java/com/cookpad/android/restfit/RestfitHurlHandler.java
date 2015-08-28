@@ -18,7 +18,7 @@ import rx.Single;
 import rx.SingleSubscriber;
 
 /**
- * A {@link RestfitHttpHandler} implementation taht uses {@link java.net.HttpURLConnection}.
+ * A {@link RestfitHttpHandler} implementation that uses {@link java.net.HttpURLConnection}.
  */
 public class RestfitHurlHandler implements RestfitHttpHandler {
 
@@ -29,9 +29,9 @@ public class RestfitHurlHandler implements RestfitHttpHandler {
             @Override
             public void call(SingleSubscriber<? super RestfitResponse> subscriber) {
                 try {
-                    HttpURLConnection conn = (HttpURLConnection) new URL(request.url).openConnection();
+                    HttpURLConnection conn = connect(request);
 
-                    // create a request
+                    // setup a connection
 
                     conn.setRequestMethod(request.getMethod());
                     for (Map.Entry<String, String> header : request.getHeaders()) {
@@ -69,6 +69,10 @@ public class RestfitHurlHandler implements RestfitHttpHandler {
                 }
             }
         });
+    }
+
+    HttpURLConnection connect(RestfitRequest request) throws IOException {
+        return (HttpURLConnection) new URL(request.url.toString()).openConnection();
     }
 
     Map<String, String> extractLastItems(Map<String, List<String>> raw) {

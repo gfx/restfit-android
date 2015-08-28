@@ -1,6 +1,6 @@
 package com.cookpad.android.restfit;
 
-import com.cookpad.android.restfit.internal.RestfitParcelable;
+import com.cookpad.android.restfit.internal.RestfitBaseModel;
 
 import android.support.annotation.NonNull;
 
@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class RestfitHttpHeaders extends RestfitParcelable implements Iterable<Map.Entry<String, String>> {
+public class RestfitHttpHeaders extends RestfitBaseModel implements Iterable<Map.Entry<String, String>> {
 
     public static String KEY_USER_AGENT = "User-Agent";
 

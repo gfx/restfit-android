@@ -1,7 +1,7 @@
 package com.cookpad.android.restfit;
 
 import com.cookpad.android.restfit.exception.RestfitReadResponseException;
-import com.cookpad.android.restfit.internal.RestfitParcelable;
+import com.cookpad.android.restfit.internal.RestfitBaseModel;
 import com.cookpad.android.restfit.internal.RestfitUtils;
 
 import android.support.annotation.NonNull;
@@ -14,7 +14,7 @@ import java.io.Reader;
 import rx.Single;
 import rx.SingleSubscriber;
 
-public class RestfitResponseBody extends RestfitParcelable {
+public class RestfitResponseBody extends RestfitBaseModel {
 
     final RestfitRequest request;
 

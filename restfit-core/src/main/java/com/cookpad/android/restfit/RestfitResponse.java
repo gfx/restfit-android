@@ -1,12 +1,12 @@
 package com.cookpad.android.restfit;
 
-import com.cookpad.android.restfit.internal.RestfitParcelable;
+import com.cookpad.android.restfit.internal.RestfitBaseModel;
 
 import android.support.annotation.NonNull;
 
 import java.util.Map;
 
-public class RestfitResponse extends RestfitParcelable {
+public class RestfitResponse extends RestfitBaseModel {
 
     final RestfitRequest request;
 
