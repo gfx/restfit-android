@@ -8,9 +8,7 @@ import com.cookpad.android.restfit.RestfitResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
-import android.os.Build;
 import android.support.annotation.NonNull;
 
 import java.util.Collections;
@@ -22,7 +20,6 @@ import rx.observers.TestSubscriber;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-@Config(sdk = Build.VERSION_CODES.JELLY_BEAN)
 @RunWith(RobolectricTestRunner.class)
 public class RestfitClientTest {
 

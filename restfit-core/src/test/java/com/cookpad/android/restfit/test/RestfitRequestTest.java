@@ -7,10 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import android.net.Uri;
-import android.os.Build;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,7 +18,6 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-@Config(sdk = Build.VERSION_CODES.JELLY_BEAN)
 @RunWith(RobolectricTestRunner.class)
 public class RestfitRequestTest {
 
