@@ -1,5 +1,8 @@
-<manifest package="com.cookpad.android.restfit.okhttp">
+<manifest
+        package="com.cookpad.android.restfit.okhttp"
+        xmlns:tools="http://schemas.android.com/tools"
+        >
 
-    <application />
+    <application tools:ignore="AllowBackup" />
 
 </manifest>

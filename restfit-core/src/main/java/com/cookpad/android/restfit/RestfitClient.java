@@ -5,6 +5,7 @@ import com.cookpad.android.restfit.internal.RestfitUtils;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -83,7 +84,15 @@ public class RestfitClient {
         ExecutorService executorService;
 
         public Builder endpoint(@NonNull String endpoint) {
-            this.endpoint = Uri.parse(endpoint);
+            return endpoint(Uri.parse(endpoint));
+        }
+
+        public Builder endpoint(@NonNull URL endpoint) {
+            return endpoint(Uri.parse(endpoint.toString()));
+        }
+
+        public Builder endpoint(@NonNull Uri endpoint) {
+            this.endpoint = endpoint;
             return this;
         }
 

@@ -34,7 +34,9 @@ public class RestfitResponseBody extends RestfitBaseModel {
 
     @NonNull
     public synchronized String getAsStringSync() throws RestfitReadResponseException {
-        RestfitUtils.assertNotOnMainThread();
+        if (BuildConfig.DEBUG) {
+            RestfitUtils.assertNotOnMainThread();
+        }
 
         if (stringBuffer != null) {
             return stringBuffer;
