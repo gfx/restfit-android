@@ -1,7 +1,7 @@
 package com.cookpad.android.restfit.test;
 
 import com.cookpad.android.restfit.RestfitClient;
-import com.cookpad.android.restfit.RestfitHurlHandler;
+import com.cookpad.android.restfit.RestfitHurlStack;
 import com.cookpad.android.restfit.RestfitRequest;
 import com.cookpad.android.restfit.RestfitResponse;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class RestfitHurlHandlerTest {
+public class RestfitHurlStackTest {
 
     MockWebServer server;
 
@@ -31,7 +31,7 @@ public class RestfitHurlHandlerTest {
 
         client = new RestfitClient.Builder()
                 .userAgent("RestfitTest/1.0")
-                .httpHandler(new RestfitHurlHandler())
+                .httpHandler(new RestfitHurlStack())
                 .build();
 
     }

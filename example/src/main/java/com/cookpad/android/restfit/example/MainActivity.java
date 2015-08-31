@@ -1,7 +1,7 @@
 package com.cookpad.android.restfit.example;
 
 import com.cookpad.android.restfit.RestfitClient;
-import com.cookpad.android.restfit.RestfitHurlHandler;
+import com.cookpad.android.restfit.RestfitHurlStack;
 import com.cookpad.android.restfit.RestfitRequest;
 import com.cookpad.android.restfit.RestfitResponse;
 import com.cookpad.android.rxt4a.schedulers.AndroidSchedulers;
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.content);
 
         client = new RestfitClient.Builder()
-                .httpHandler(new RestfitHurlHandler())
+                .httpHandler(new RestfitHurlStack())
                 .userAgent("RestfitExample/1.0")
                 .debug(BuildConfig.DEBUG)
                 .build();

@@ -15,7 +15,7 @@ public class RestfitClient {
 
     final RestfitHttpHeaders headers;
 
-    final RestfitHttpHandler httpHandler;
+    final RestfitHttpStack httpHandler;
 
     final ExecutorService executorService;
 
@@ -53,7 +53,7 @@ public class RestfitClient {
 
         RestfitHttpHeaders requestHeaders = new RestfitHttpHeaders();
 
-        RestfitHttpHandler httpHandler;
+        RestfitHttpStack httpHandler;
 
         ExecutorService executorService;
 
@@ -62,7 +62,7 @@ public class RestfitClient {
             return this;
         }
 
-        public Builder httpHandler(@NonNull RestfitHttpHandler httpHandler) {
+        public Builder httpHandler(@NonNull RestfitHttpStack httpHandler) {
             this.httpHandler = httpHandler;
             return this;
         }

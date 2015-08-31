@@ -18,9 +18,9 @@ import rx.Single;
 import rx.SingleSubscriber;
 
 /**
- * A {@link RestfitHttpHandler} implementation that uses {@link java.net.HttpURLConnection}.
+ * A {@link RestfitHttpStack} implementation that uses {@link java.net.HttpURLConnection}.
  */
-public class RestfitHurlHandler implements RestfitHttpHandler {
+public class RestfitHurlStack implements RestfitHttpStack {
 
     @NonNull
     @Override

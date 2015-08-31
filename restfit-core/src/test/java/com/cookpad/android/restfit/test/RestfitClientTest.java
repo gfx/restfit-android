@@ -1,7 +1,7 @@
 package com.cookpad.android.restfit.test;
 
 import com.cookpad.android.restfit.RestfitClient;
-import com.cookpad.android.restfit.RestfitHttpHandler;
+import com.cookpad.android.restfit.RestfitHttpStack;
 import com.cookpad.android.restfit.RestfitRequest;
 import com.cookpad.android.restfit.RestfitResponse;
 
@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 @RunWith(RobolectricTestRunner.class)
 public class RestfitClientTest {
 
-    class DummyHttpHandler implements RestfitHttpHandler {
+    class DummyHttpStack implements RestfitHttpStack {
 
         @NonNull
         @Override
@@ -38,7 +38,7 @@ public class RestfitClientTest {
     public void testCreateInstanceWithoutUserAgent() throws Exception {
         try {
             new RestfitClient.Builder()
-                    .httpHandler(new DummyHttpHandler())
+                    .httpHandler(new DummyHttpStack())
                     .build();
             fail("never reached");
         } catch (IllegalArgumentException e) {
@@ -62,7 +62,7 @@ public class RestfitClientTest {
     public void testCreateInstance() throws Exception {
         RestfitClient client = new RestfitClient.Builder()
                 .userAgent("RestfitTest/1.0")
-                .httpHandler(new DummyHttpHandler())
+                .httpHandler(new DummyHttpStack())
                 .build();
 
         assertThat(client.getUserAgent(), is("RestfitTest/1.0"));
@@ -73,7 +73,7 @@ public class RestfitClientTest {
 
         RestfitClient client = new RestfitClient.Builder()
                 .userAgent("RestfitTest/1.0")
-                .httpHandler(new RestfitHttpHandler() {
+                .httpHandler(new RestfitHttpStack() {
                     @NonNull
                     @Override
                     public Single<RestfitResponse> perform(@NonNull RestfitRequest request) {
