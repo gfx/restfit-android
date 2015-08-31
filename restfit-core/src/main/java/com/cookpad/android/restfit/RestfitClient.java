@@ -58,7 +58,7 @@ public class RestfitClient {
 
     @NonNull
     public RestfitRequest.Builder requestBuilder() {
-        RestfitRequest.Builder b = new RestfitRequest.Builder()
+        RestfitRequest.Builder b = new RestfitRequest.Builder(this)
                 .connectTimeoutMillis(defaultConnectTimeoutMillis)
                 .readTimeoutMillis(defaultReadTimeoutMillis)
                 .headers(headers);

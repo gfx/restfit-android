@@ -2,7 +2,6 @@ package com.cookpad.android.restfit.example;
 
 import com.cookpad.android.restfit.RestfitClient;
 import com.cookpad.android.restfit.RestfitHurlStack;
-import com.cookpad.android.restfit.RestfitRequest;
 import com.cookpad.android.restfit.RestfitResponse;
 import com.cookpad.android.rxt4a.schedulers.AndroidSchedulers;
 
@@ -28,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         client = new RestfitClient.Builder()
                 .httpStack(new RestfitHurlStack())
                 .userAgent("RestfitExample/1.0")
+                .endpoint("https://api.github.com/")
                 .debug(BuildConfig.DEBUG)
                 .build();
     }
@@ -36,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        client.call(new RestfitRequest.Builder()
+        client.requestBuilder()
                 .method("GET")
-                .url("http://example.com")
-                .build())
+                .path("/emojis")
+                .toSingle()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleSubscriber<RestfitResponse>() {
                     @Override

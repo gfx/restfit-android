@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 
+import rx.Single;
+
 public class RestfitRequest extends RestfitBaseModel {
 
     final String method;
@@ -80,6 +82,8 @@ public class RestfitRequest extends RestfitBaseModel {
 
     public static class Builder {
 
+        final RestfitClient client;
+
         String method;
 
         Uri url;
@@ -97,8 +101,8 @@ public class RestfitRequest extends RestfitBaseModel {
         /**
          * Creates a builder via {@link RestfitClient#requestBuilder()}.
          */
-        /* package */ Builder() {
-
+        /* package */ Builder(RestfitClient client) {
+            this.client = client;
         }
 
 
@@ -160,6 +164,11 @@ public class RestfitRequest extends RestfitBaseModel {
         public Builder readTimeoutMillis(int readTimeoutMillis) {
             this.readTimeoutMillis = readTimeoutMillis;
             return this;
+        }
+
+        @NonNull
+        public Single<RestfitResponse> toSingle() {
+            return client.call(build());
         }
 
         @NonNull

@@ -56,10 +56,10 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(client.requestBuilder()
+        RestfitResponse response = client.requestBuilder()
                 .method("GET")
                 .url(server.url("/hello").url())
-                .build())
+                .toSingle()
                 .toObservable()
                 .toBlocking()
                 .single();
@@ -77,10 +77,10 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(client.requestBuilder()
+        RestfitResponse response = client.requestBuilder()
                 .method("GET")
                 .url(server.url("/hello").url())
-                .build())
+                .toSingle()
                 .toObservable()
                 .toBlocking()
                 .single();
@@ -98,10 +98,10 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(client.requestBuilder()
+        RestfitResponse response = client.requestBuilder()
                 .method("GET")
                 .url(server.url("/hello").url())
-                .build())
+                .toSingle()
                 .toObservable()
                 .toBlocking()
                 .single();
@@ -119,10 +119,10 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(client.requestBuilder()
+        RestfitResponse response = client.requestBuilder()
                 .method("GET")
                 .url(server.url("/hello").url())
-                .build())
+                .toSingle()
                 .toObservable()
                 .toBlocking()
                 .single();
@@ -140,10 +140,10 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(client.requestBuilder()
+        RestfitResponse response = client.requestBuilder()
                 .method("GET")
                 .url(server.url("/hello").url())
-                .build())
+                .toSingle()
                 .toObservable()
                 .toBlocking()
                 .single();
@@ -161,10 +161,10 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(client.requestBuilder()
+        RestfitResponse response = client.requestBuilder()
                 .method("GET")
                 .url(server.url("/hello").url())
-                .build())
+                .toSingle()
                 .toObservable()
                 .toBlocking()
                 .single();
@@ -182,10 +182,10 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(client.requestBuilder()
+        RestfitResponse response = client.requestBuilder()
                 .method("GET")
                 .url(server.url("/hello").url())
-                .build())
+                .toSingle()
                 .toObservable()
                 .toBlocking()
                 .single();
@@ -206,11 +206,11 @@ public class RestfitHurlStackTest {
         JsonObject json = new JsonObject();
         json.addProperty("foo", "bar");
 
-        client.call(client.requestBuilder()
+        client.requestBuilder()
                 .method("POST")
                 .url(server.url("/hello").url())
                 .body(new RestfitJsonRequestBody(json))
-                .build())
+                .toSingle()
                 .toObservable()
                 .toBlocking()
                 .single();
@@ -233,12 +233,12 @@ public class RestfitHurlStackTest {
 
         TestSubscriber<RestfitResponse> testSubscriber = TestSubscriber.create();
 
-        client.call(client.requestBuilder()
+        client.requestBuilder()
                 .method("POST")
                 .url(server.url("/hello").url())
                 .connectTimeoutMillis(1)
                 .readTimeoutMillis(1)
-                .build())
+                .toSingle()
                 .subscribe(testSubscriber);
 
         testSubscriber.awaitTerminalEvent(1, TimeUnit.SECONDS);
