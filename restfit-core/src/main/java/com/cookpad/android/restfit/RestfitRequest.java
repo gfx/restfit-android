@@ -33,7 +33,9 @@ public class RestfitRequest extends RestfitBaseModel {
         connectTimeoutMillis = builder.connectTimeoutMillis;
         readTimeoutMillis = builder.readTimeoutMillis;
 
-        headers.putAll(body.headers());
+        if (body != null) {
+            headers.putAll(body.headers());
+        }
     }
 
     static Uri buildUrl(Uri url, RestfitQueryStringBuilder queryString) {
@@ -59,6 +61,10 @@ public class RestfitRequest extends RestfitBaseModel {
 
     public RestfitRequestBody getBody() {
         return body;
+    }
+
+    public boolean hasBody() {
+        return body != null;
     }
 
     public int getConnectTimeoutMillis() {

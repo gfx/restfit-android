@@ -27,7 +27,7 @@ public class RestfitHttpHeaders extends RestfitBaseModel implements Iterable<Map
     }
 
     public void putAll(@NonNull RestfitHttpHeaders headers) {
-        headers.putAll(headers.rawHeaders);
+        rawHeaders.putAll(headers.rawHeaders);
     }
 
     public String get(@NonNull String key) {
@@ -36,10 +36,6 @@ public class RestfitHttpHeaders extends RestfitBaseModel implements Iterable<Map
 
     public boolean contains(@NonNull String key) {
         return rawHeaders.containsKey(key);
-    }
-
-    public Map<String, String> getRawHeaders() {
-        return rawHeaders;
     }
 
     public static final Creator<RestfitHttpHeaders> CREATOR = new EasyCreator<>(RestfitHttpHeaders.class);

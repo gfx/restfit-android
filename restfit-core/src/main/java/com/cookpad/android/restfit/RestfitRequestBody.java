@@ -12,7 +12,7 @@ public interface RestfitRequestBody {
     String HTTP_CONTENT_LENGTH = "Content-Length";
 
     /**
-     * Returns HTTP headers that includes <code>Content-Type</code>, <code>Content-Length</code>
+     * Returns HTTP headers that includes <code>Content-Type</code>, <code>Content-Length</code>.
      */
     @NonNull
     RestfitHttpHeaders headers();

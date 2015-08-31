@@ -33,8 +33,7 @@ public abstract class RestfitBaseModel implements Parcelable {
 
     @Override
     public String toString() {
-        // FIXME it's not the best performance
-        return GSON.toJson(this);
+        return getClass().getSimpleName() + GSON.toJson(this);
     }
 
     @Override

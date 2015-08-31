@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -28,17 +29,24 @@ public class RestfitHurlStack implements RestfitHttpStack {
         return Single.create(new Single.OnSubscribe<RestfitResponse>() {
             @Override
             public void call(SingleSubscriber<? super RestfitResponse> subscriber) {
+                HttpURLConnection conn = null;
                 try {
-                    HttpURLConnection conn = connect(request);
+                    conn = connect(request);
 
                     // setup a connection
-
                     conn.setRequestMethod(request.getMethod());
                     for (Map.Entry<String, String> header : request.getHeaders()) {
                         conn.setRequestProperty(header.getKey(), header.getValue());
                     }
                     conn.setConnectTimeout(request.getConnectTimeoutMillis());
                     conn.setReadTimeout(request.getReadTimeoutMillis());
+
+                    if (request.hasBody()) {
+                        conn.setDoOutput(true);
+                        OutputStream out = conn.getOutputStream();
+                        request.writeBodyTo(out);
+                        out.close();
+                    }
 
                     // wait for a response
                     InputStream in;
@@ -66,6 +74,9 @@ public class RestfitHurlStack implements RestfitHttpStack {
 
                 } catch (IOException e) {
                     subscriber.onError(new RestfitRequestException(request, e));
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
                 }
             }
         });

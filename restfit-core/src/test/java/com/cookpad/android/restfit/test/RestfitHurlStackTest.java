@@ -1,11 +1,15 @@
 package com.cookpad.android.restfit.test;
 
+import com.google.gson.JsonObject;
+
 import com.cookpad.android.restfit.RestfitClient;
 import com.cookpad.android.restfit.RestfitHurlStack;
+import com.cookpad.android.restfit.RestfitJsonRequestBody;
 import com.cookpad.android.restfit.RestfitRequest;
 import com.cookpad.android.restfit.RestfitResponse;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
 import org.junit.After;
 import org.junit.Before;
@@ -13,9 +17,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import static com.cookpad.android.restfit.internal.RestfitUtils.DEFAULT_ENCODING;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-
 @RunWith(RobolectricTestRunner.class)
 public class RestfitHurlStackTest {
 
@@ -188,4 +192,35 @@ public class RestfitHurlStackTest {
         assertThat(response.getBody().getAsStringSync(), is("hello, world!"));
     }
 
+
+    @Test
+    public void testRequestBody() throws Exception {
+        server.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody("hello, world!"));
+
+        JsonObject json = new JsonObject();
+        json.addProperty("foo", "bar");
+
+        client.call(new RestfitRequest.Builder()
+                .method("POST")
+                .url(server.getUrl("/hello"))
+                .body(new RestfitJsonRequestBody(json))
+                .build())
+                .toObservable()
+                .toBlocking()
+                .single();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getMethod(), is("POST"));
+        assertThat(request.getPath(), is("/hello"));
+        assertThat(request.getHeader("content-type"), is("application/json"));
+        assertThat(request.getHeader("content-length"), is(String.valueOf(sizeOfString(json.toString()))));
+        assertThat(request.getBody().readString(DEFAULT_ENCODING), is(json.toString()));
+    }
+
+    int sizeOfString(String s) {
+        return s.getBytes(DEFAULT_ENCODING).length;
+    }
 }
