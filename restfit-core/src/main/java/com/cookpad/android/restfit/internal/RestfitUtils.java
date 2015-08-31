@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
@@ -41,6 +42,19 @@ public class RestfitUtils {
             throw new RuntimeException("never reached", e);
         }
     }
+
+    @NonNull
+    public static String decodeUrlComponent(@Nullable String s) {
+        if (TextUtils.isEmpty(s)) {
+            return "";
+        }
+        try {
+            return URLDecoder.decode(s, DEFAULT_ENCODING_NAME);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("never reached", e);
+        }
+    }
+
 
     @NonNull
     public static ExecutorService createDefaultThreadPoolExecutor() {

@@ -1,6 +1,6 @@
 package com.cookpad.android.restfit.test;
 
-import com.cookpad.android.restfit.RestfitQueryString;
+import com.cookpad.android.restfit.RestfitQueryStringBuilder;
 import com.cookpad.android.restfit.RestfitRequest;
 
 import org.junit.Before;
@@ -68,7 +68,7 @@ public class RestfitRequestTest {
         RestfitRequest r = new RestfitRequest.Builder()
                 .method("GET")
                 .url("http://example.com/")
-                .queryString(new RestfitQueryString()
+                .queryString(new RestfitQueryStringBuilder()
                         .put("foo", "bar")
                         .put("ほげ", "ふが"))
                 .build();
@@ -81,7 +81,7 @@ public class RestfitRequestTest {
         RestfitRequest r = new RestfitRequest.Builder()
                 .method("GET")
                 .url("http://example.com/?foo=bar")
-                .queryString(new RestfitQueryString()
+                .queryString(new RestfitQueryStringBuilder()
                         .put("ほげ", "ふが"))
                 .build();
 

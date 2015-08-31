@@ -31,12 +31,12 @@ public class RestfitRequest extends RestfitBaseModel {
         readTimeoutMillis = builder.readTimeoutMillis;
     }
 
-    static Uri buildUrl(Uri url, RestfitQueryString queryString) {
+    static Uri buildUrl(Uri url, RestfitQueryStringBuilder queryString) {
         for (String key : url.getQueryParameterNames()) {
             queryString.put(key, url.getQueryParameter(key));
         }
         return url.buildUpon()
-                .encodedQuery(queryString.buildQueryString())
+                .encodedQuery(queryString.build())
                 .build();
     }
 
@@ -70,7 +70,7 @@ public class RestfitRequest extends RestfitBaseModel {
 
         Uri url;
 
-        RestfitQueryString queryString = new RestfitQueryString();
+        RestfitQueryStringBuilder queryString = new RestfitQueryStringBuilder();
 
         RestfitHttpHeaders headers = new RestfitHttpHeaders();
 
@@ -101,7 +101,7 @@ public class RestfitRequest extends RestfitBaseModel {
             return this;
         }
 
-        public Builder queryString(@NonNull RestfitQueryString queryString) {
+        public Builder queryString(@NonNull RestfitQueryStringBuilder queryString) {
             this.queryString = queryString;
             return this;
         }
