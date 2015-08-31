@@ -128,7 +128,7 @@ public class RestfitRequest extends RestfitBaseModel {
 
         public Builder path(@NonNull String path) {
             this.url = url.buildUpon()
-                    .path(path)
+                    .appendEncodedPath(path)
                     .build();
             return this;
         }

@@ -35,6 +35,7 @@ public class RestfitRequestTest {
         client = new RestfitClient.Builder()
                 .userAgent("RestfitTest/1.0")
                 .httpStack(new RestfitHurlStack())
+                .endpoint("https://example.com")
                 .build();
 
         a = client.requestBuilder()
@@ -73,6 +74,28 @@ public class RestfitRequestTest {
     public void testHashCode() throws Exception {
         assertThat(a.hashCode(), is(b.hashCode()));
     }
+
+    @Test
+    public void testPath() throws Exception {
+        RestfitRequest r = client.requestBuilder()
+                .method("GET")
+                .url("http://example.com/v1")
+                .path("hello")
+                .build();
+
+        assertThat(r.getUrl(), is(Uri.parse("http://example.com/v1/hello")));
+    }
+
+    @Test
+    public void testEndpointAndPath() throws Exception {
+        RestfitRequest r = client.requestBuilder()
+                .method("GET")
+                .path("hello")
+                .build();
+
+        assertThat(r.getUrl(), is(Uri.parse("https://example.com/hello")));
+    }
+
 
     @Test
     public void testQueryString() throws Exception {
