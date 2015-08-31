@@ -11,14 +11,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class RestfitQueryStringBuilder {
+
+    static final Pattern SEP_QUERY_STRING = Pattern.compile("[&;]");
+
+    static final Pattern SEP_PAIR = Pattern.compile("=");
 
     final Map<String, String> params = new LinkedHashMap<>();
 
     public RestfitQueryStringBuilder(@NonNull String queryString) {
-        for (String pair : queryString.split("[&;]")) {
-            String[] kv = pair.split("=", 2);
+        for (String pair : SEP_QUERY_STRING.split(queryString)) {
+            String[] kv = SEP_PAIR.split(pair, 2);
             // to allow non-encoded query strings like "value=こんにちは"
             put(decode(kv[0]), decode(kv[1]));
         }
@@ -37,8 +42,10 @@ public class RestfitQueryStringBuilder {
         return RestfitUtils.decodeUrlComponent(key);
     }
 
-    public RestfitQueryStringBuilder putQueryString(@NonNull String queryString) {
-        this.putAll(new RestfitQueryStringBuilder(queryString));
+    public RestfitQueryStringBuilder putQueryString(@Nullable String queryString) {
+        if (!TextUtils.isEmpty(queryString)) {
+            this.putAll(new RestfitQueryStringBuilder(queryString));
+        }
         return this;
     }
 

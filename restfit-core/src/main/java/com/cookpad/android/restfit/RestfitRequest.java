@@ -1,5 +1,6 @@
 package com.cookpad.android.restfit;
 
+import com.cookpad.android.restfit.exception.RestfitRuntimeException;
 import com.cookpad.android.restfit.internal.RestfitBaseModel;
 
 import android.net.Uri;
@@ -32,11 +33,11 @@ public class RestfitRequest extends RestfitBaseModel {
     }
 
     static Uri buildUrl(Uri url, RestfitQueryStringBuilder queryString) {
-        for (String key : url.getQueryParameterNames()) {
-            queryString.put(key, url.getQueryParameter(key));
-        }
+        RestfitQueryStringBuilder q = new RestfitQueryStringBuilder();
+        q.putQueryString(url.getQuery());
+        q.putAll(queryString);
         return url.buildUpon()
-                .encodedQuery(queryString.build())
+                .encodedQuery(q.build())
                 .build();
     }
 
@@ -108,6 +109,14 @@ public class RestfitRequest extends RestfitBaseModel {
 
         public Builder header(@NonNull String key, @NonNull String value) {
             headers.put(key, value);
+            return this;
+        }
+
+        public Builder body(@NonNull RestfitRequestBody body) {
+            if (this.body != null) {
+                throw new RestfitRuntimeException("A request body is already set");
+            }
+            this.body = body;
             return this;
         }
 
