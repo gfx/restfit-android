@@ -6,6 +6,8 @@ import com.cookpad.android.restfit.internal.RestfitBaseModel;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +32,8 @@ public class RestfitRequest extends RestfitBaseModel {
         body = builder.body;
         connectTimeoutMillis = builder.connectTimeoutMillis;
         readTimeoutMillis = builder.readTimeoutMillis;
+
+        headers.putAll(body.headers());
     }
 
     static Uri buildUrl(Uri url, RestfitQueryStringBuilder queryString) {
@@ -63,6 +67,10 @@ public class RestfitRequest extends RestfitBaseModel {
 
     public int getReadTimeoutMillis() {
         return readTimeoutMillis;
+    }
+
+    public void writeBodyTo(OutputStream out) throws IOException {
+        body.writeTo(out);
     }
 
     public static class Builder {

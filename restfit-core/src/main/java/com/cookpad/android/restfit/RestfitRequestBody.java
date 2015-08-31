@@ -1,12 +1,24 @@
 package com.cookpad.android.restfit;
 
-import com.cookpad.android.restfit.internal.RestfitBaseModel;
+import android.support.annotation.NonNull;
 
-public class RestfitRequestBody extends RestfitBaseModel {
+import java.io.IOException;
+import java.io.OutputStream;
 
-    public RestfitRequestBody() {
+public interface RestfitRequestBody {
 
-    }
+    String HTTP_CONTENT_TYPE = "Content-Type";
 
-    public static final Creator<RestfitRequestBody> CREATOR = new EasyCreator<>(RestfitRequestBody.class);
+    String HTTP_CONTENT_LENGTH = "Content-Length";
+
+    /**
+     * Returns HTTP headers that includes <code>Content-Type</code>, <code>Content-Length</code>
+     */
+    @NonNull
+    RestfitHttpHeaders headers();
+
+    /**
+     * Writes the content body to {@param out}.
+     */
+    void writeTo(@NonNull OutputStream out) throws IOException;
 }
