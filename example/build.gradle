@@ -28,4 +28,5 @@ android {
 dependencies {
     compile project(':restfit-core')
     compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.cookpad.android.rxt4a:rxt4a:0.10.0'
 }
