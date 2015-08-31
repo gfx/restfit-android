@@ -38,7 +38,7 @@ public class RestfitClientTest {
     public void testCreateInstanceWithoutUserAgent() throws Exception {
         try {
             new RestfitClient.Builder()
-                    .httpHandler(new DummyHttpStack())
+                    .httpStack(new DummyHttpStack())
                     .build();
             fail("never reached");
         } catch (IllegalArgumentException e) {
@@ -54,7 +54,7 @@ public class RestfitClientTest {
                     .build();
             fail("never reached");
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("No httpHandler specified"));
+            assertThat(e.getMessage(), is("No httpStack specified"));
         }
     }
 
@@ -62,7 +62,7 @@ public class RestfitClientTest {
     public void testCreateInstance() throws Exception {
         RestfitClient client = new RestfitClient.Builder()
                 .userAgent("RestfitTest/1.0")
-                .httpHandler(new DummyHttpStack())
+                .httpStack(new DummyHttpStack())
                 .build();
 
         assertThat(client.getUserAgent(), is("RestfitTest/1.0"));
@@ -73,7 +73,7 @@ public class RestfitClientTest {
 
         RestfitClient client = new RestfitClient.Builder()
                 .userAgent("RestfitTest/1.0")
-                .httpHandler(new RestfitHttpStack() {
+                .httpStack(new RestfitHttpStack() {
                     @NonNull
                     @Override
                     public Single<RestfitResponse> perform(@NonNull RestfitRequest request) {
@@ -82,7 +82,7 @@ public class RestfitClientTest {
                 })
                 .build();
 
-        RestfitRequest request = new RestfitRequest.Builder()
+        RestfitRequest request = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com/")
                 .build();

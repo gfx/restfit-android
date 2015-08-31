@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.content);
 
         client = new RestfitClient.Builder()
-                .httpHandler(new RestfitHurlStack())
+                .httpStack(new RestfitHurlStack())
                 .userAgent("RestfitExample/1.0")
                 .debug(BuildConfig.DEBUG)
                 .build();

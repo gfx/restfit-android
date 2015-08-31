@@ -5,6 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -59,5 +63,21 @@ public class RestfitUtils {
     @NonNull
     public static ExecutorService createDefaultThreadPoolExecutor() {
         return Executors.newFixedThreadPool(4);
+    }
+
+    @NonNull
+    public static String slurpAsString(InputStream inputStream) throws IOException {
+        char[] buffer = new char[BUFFER_SIZE];
+        StringBuilder result = new StringBuilder();
+        Reader reader = new InputStreamReader(inputStream, DEFAULT_ENCODING);
+
+        for (; ; ) {
+            int size = reader.read(buffer);
+            if (size <= 0) {
+                break;
+            }
+            result.append(buffer, 0, size);
+        }
+        return result.toString();
     }
 }

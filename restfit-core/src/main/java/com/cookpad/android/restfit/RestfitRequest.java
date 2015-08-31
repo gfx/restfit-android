@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 public class RestfitRequest extends RestfitBaseModel {
 
@@ -91,9 +90,16 @@ public class RestfitRequest extends RestfitBaseModel {
 
         RestfitRequestBody body;
 
-        int connectTimeoutMillis = (int) TimeUnit.SECONDS.toMillis(10);
+        int connectTimeoutMillis;
 
-        int readTimeoutMillis = (int) TimeUnit.SECONDS.toMillis(30);
+        int readTimeoutMillis;
+
+        /**
+         * Creates a builder via {@link RestfitClient#requestBuilder()}.
+         */
+        /* package */ Builder() {
+
+        }
 
 
         public Builder method(@NonNull String method) {
@@ -116,6 +122,13 @@ public class RestfitRequest extends RestfitBaseModel {
             return this;
         }
 
+        public Builder path(@NonNull String path) {
+            this.url = url.buildUpon()
+                    .path(path)
+                    .build();
+            return this;
+        }
+
         public Builder queryString(@NonNull RestfitQueryStringBuilder queryString) {
             this.queryString = queryString;
             return this;
@@ -123,6 +136,11 @@ public class RestfitRequest extends RestfitBaseModel {
 
         public Builder header(@NonNull String key, @NonNull String value) {
             headers.put(key, value);
+            return this;
+        }
+
+        public Builder headers(@NonNull RestfitHttpHeaders headers) {
+            headers.putAll(headers);
             return this;
         }
 
@@ -139,7 +157,7 @@ public class RestfitRequest extends RestfitBaseModel {
             return this;
         }
 
-        public Builder setReadTimeoutMillis(int readTimeoutMillis) {
+        public Builder readTimeoutMillis(int readTimeoutMillis) {
             this.readTimeoutMillis = readTimeoutMillis;
             return this;
         }

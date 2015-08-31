@@ -1,7 +1,10 @@
 package com.cookpad.android.restfit.test;
 
+import com.cookpad.android.restfit.RestfitClient;
+import com.cookpad.android.restfit.RestfitHurlStack;
 import com.cookpad.android.restfit.RestfitRequest;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -16,6 +19,8 @@ import static org.hamcrest.Matchers.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class RestfitParcelableTest {
+
+    RestfitClient client;
 
     Context getContext() {
         return RuntimeEnvironment.application;
@@ -34,9 +39,17 @@ public class RestfitParcelableTest {
         return reloadedParcelable;
     }
 
+    @Before
+    public void setUp() throws Exception {
+        client = new RestfitClient.Builder()
+                .userAgent("RestfitTest/1.0")
+                .httpStack(new RestfitHurlStack())
+                .build();
+    }
+
     @Test
     public void testRestfitRequest() throws Exception {
-        RestfitRequest a = new RestfitRequest.Builder()
+        RestfitRequest a = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com")
                 .header("X-ABC-XYZ", "foo")

@@ -8,7 +8,7 @@ import android.net.Uri;
 
 import java.io.IOException;
 
-class UriTypeAdapter extends TypeAdapter<Uri> {
+/* package */ class UriTypeAdapter extends TypeAdapter<Uri> {
 
     @Override
     public void write(JsonWriter out, Uri value) throws IOException {

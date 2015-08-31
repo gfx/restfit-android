@@ -2,6 +2,7 @@ package com.cookpad.android.restfit;
 
 import com.cookpad.android.restfit.exception.RestfitRequestException;
 import com.cookpad.android.restfit.exception.RestfitRuntimeException;
+import com.cookpad.android.restfit.exception.RestfitTimeoutException;
 
 import android.support.annotation.NonNull;
 
@@ -72,11 +73,10 @@ public class RestfitHurlStack implements RestfitHttpStack {
                             .build();
                     subscriber.onSuccess(response);
 
+                } catch (SocketTimeoutException e) {
+                    subscriber.onError(new RestfitTimeoutException(request, e));
                 } catch (IOException e) {
                     subscriber.onError(new RestfitRequestException(request, e));
-                    if (conn != null) {
-                        conn.disconnect();
-                    }
                 }
             }
         });

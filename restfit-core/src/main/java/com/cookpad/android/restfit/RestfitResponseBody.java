@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 import rx.Single;
 import rx.SingleSubscriber;
@@ -45,29 +43,16 @@ public class RestfitResponseBody extends RestfitBaseModel {
             return stringBuffer;
         }
 
-        char[] buffer = new char[RestfitUtils.BUFFER_SIZE];
-        StringBuilder result = new StringBuilder();
-        Reader reader = new InputStreamReader(inputStream, RestfitUtils.DEFAULT_ENCODING);
-
-        for (; ; ) {
-            try {
-                int size = reader.read(buffer);
-                if (size <= 0) {
-                    break;
-                }
-                result.append(buffer, 0, size);
-            } catch (IOException e) {
-                throw new RestfitReadResponseException(request, e);
-            }
-        }
+        String result;
 
         try {
-            reader.close();
+            result = RestfitUtils.slurpAsString(inputStream);
+            inputStream.close();
         } catch (IOException e) {
-            // ignore
+            throw new RestfitReadResponseException(request, e);
         }
 
-        return result.toString();
+        return result;
     }
 
 

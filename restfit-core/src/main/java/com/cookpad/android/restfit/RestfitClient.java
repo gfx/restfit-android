@@ -2,9 +2,11 @@ package com.cookpad.android.restfit;
 
 import com.cookpad.android.restfit.internal.RestfitUtils;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import rx.Single;
 import rx.SingleSubscriber;
@@ -13,15 +15,22 @@ public class RestfitClient {
 
     final boolean debug;
 
+    final Uri endpoint;
+
     final RestfitHttpHeaders headers;
 
-    final RestfitHttpStack httpHandler;
+    final RestfitHttpStack httpStack;
 
     final ExecutorService executorService;
 
+    final int defaultConnectTimeoutMillis = (int) TimeUnit.SECONDS.toMillis(2);
+
+    final int defaultReadTimeoutMillis = (int) TimeUnit.SECONDS.toMillis(10);
+
     RestfitClient(Builder builder) {
+        endpoint = builder.endpoint;
         headers = builder.requestHeaders;
-        httpHandler = builder.httpHandler;
+        httpStack = builder.httpStack;
         executorService = builder.executorService;
         debug = builder.debug;
     }
@@ -40,30 +49,51 @@ public class RestfitClient {
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
-                        httpHandler.perform(request).subscribe(subscriber);
+                        httpStack.perform(request).subscribe(subscriber);
                     }
                 });
             }
         });
     }
 
+    @NonNull
+    public RestfitRequest.Builder requestBuilder() {
+        RestfitRequest.Builder b = new RestfitRequest.Builder()
+                .connectTimeoutMillis(defaultConnectTimeoutMillis)
+                .readTimeoutMillis(defaultReadTimeoutMillis)
+                .headers(headers);
+
+        if (endpoint != null) {
+            b.url(endpoint);
+        }
+
+        return b;
+    }
+
     public static class Builder {
 
         boolean debug = false;
 
+        Uri endpoint;
+
         RestfitHttpHeaders requestHeaders = new RestfitHttpHeaders();
 
-        RestfitHttpStack httpHandler;
+        RestfitHttpStack httpStack;
 
         ExecutorService executorService;
+
+        public Builder endpoint(@NonNull String endpoint) {
+            this.endpoint = Uri.parse(endpoint);
+            return this;
+        }
 
         public Builder userAgent(@NonNull String userAgent) {
             this.requestHeaders.put(RestfitHttpHeaders.KEY_USER_AGENT, userAgent);
             return this;
         }
 
-        public Builder httpHandler(@NonNull RestfitHttpStack httpHandler) {
-            this.httpHandler = httpHandler;
+        public Builder httpStack(@NonNull RestfitHttpStack httpStack) {
+            this.httpStack = httpStack;
             return this;
         }
 
@@ -83,8 +113,8 @@ public class RestfitClient {
             if (!requestHeaders.contains(RestfitHttpHeaders.KEY_USER_AGENT)) {
                 throw new IllegalArgumentException("No userAgent specified");
             }
-            if (httpHandler == null) {
-                throw new IllegalArgumentException("No httpHandler specified");
+            if (httpStack == null) {
+                throw new IllegalArgumentException("No httpStack specified");
             }
 
             if (executorService == null) {

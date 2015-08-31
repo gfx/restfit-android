@@ -1,5 +1,10 @@
 package com.cookpad.android.restfit.test;
 
+import com.google.gson.JsonObject;
+
+import com.cookpad.android.restfit.RestfitClient;
+import com.cookpad.android.restfit.RestfitHurlStack;
+import com.cookpad.android.restfit.RestfitJsonRequestBody;
 import com.cookpad.android.restfit.RestfitQueryStringBuilder;
 import com.cookpad.android.restfit.RestfitRequest;
 
@@ -23,22 +28,28 @@ public class RestfitRequestTest {
 
     RestfitRequest a, b, c;
 
+    RestfitClient client;
 
     @Before
     public void setUp() throws Exception {
-        a = new RestfitRequest.Builder()
+        client = new RestfitClient.Builder()
+                .userAgent("RestfitTest/1.0")
+                .httpStack(new RestfitHurlStack())
+                .build();
+
+        a = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com/")
                 .header("x-foo", "bar")
                 .build();
 
-        b = new RestfitRequest.Builder()
+        b = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com/")
                 .header("x-foo", "bar")
                 .build();
 
-        c = new RestfitRequest.Builder()
+        c = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com/")
                 .header("x-foo", "baz")
@@ -65,7 +76,7 @@ public class RestfitRequestTest {
 
     @Test
     public void testQueryString() throws Exception {
-        RestfitRequest r = new RestfitRequest.Builder()
+        RestfitRequest r = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com/")
                 .queryString(new RestfitQueryStringBuilder()
@@ -78,7 +89,7 @@ public class RestfitRequestTest {
 
     @Test
     public void testQueryString2() throws Exception {
-        RestfitRequest r = new RestfitRequest.Builder()
+        RestfitRequest r = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com/?foo=bar")
                 .queryString(new RestfitQueryStringBuilder()
@@ -89,6 +100,23 @@ public class RestfitRequestTest {
         assertThat(url.getQueryParameterNames(), is(makeSet("foo", "ほげ")));
         assertThat(url.getQueryParameter("foo"), is("bar"));
         assertThat(url.getQueryParameter("ほげ"), is("ふが"));
+    }
+
+    @Test
+    public void testRequestBody() throws Exception {
+        JsonObject json = new JsonObject();
+        json.addProperty("foo", "bar");
+
+        RestfitRequest r = client.requestBuilder()
+                .method("GET")
+                .url("http://example.com/")
+                .body(new RestfitJsonRequestBody(json))
+                .build();
+
+        assertThat(r.getHeaders().get("content-type"), is(notNullValue()));
+        assertThat(r.getHeaders().get("content-length"), is(notNullValue()));
+        assertThat(r.hasBody(), is(true));
+        assertThat(r.getBody(), is(notNullValue()));
     }
 
     @SafeVarargs

@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import com.cookpad.android.restfit.RestfitClient;
 import com.cookpad.android.restfit.RestfitHurlStack;
 import com.cookpad.android.restfit.RestfitJsonRequestBody;
-import com.cookpad.android.restfit.RestfitRequest;
 import com.cookpad.android.restfit.RestfitResponse;
+import com.cookpad.android.restfit.exception.RestfitTimeoutException;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -16,6 +16,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+
+import java.util.concurrent.TimeUnit;
+
+import rx.observers.TestSubscriber;
 
 import static com.cookpad.android.restfit.internal.RestfitUtils.DEFAULT_ENCODING;
 import static org.hamcrest.MatcherAssert.*;
@@ -35,7 +39,7 @@ public class RestfitHurlStackTest {
 
         client = new RestfitClient.Builder()
                 .userAgent("RestfitTest/1.0")
-                .httpHandler(new RestfitHurlStack())
+                .httpStack(new RestfitHurlStack())
                 .build();
 
     }
@@ -52,9 +56,9 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(new RestfitRequest.Builder()
+        RestfitResponse response = client.call(client.requestBuilder()
                 .method("GET")
-                .url(server.getUrl("/hello"))
+                .url(server.url("/hello").url())
                 .build())
                 .toObservable()
                 .toBlocking()
@@ -73,9 +77,9 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(new RestfitRequest.Builder()
+        RestfitResponse response = client.call(client.requestBuilder()
                 .method("GET")
-                .url(server.getUrl("/hello"))
+                .url(server.url("/hello").url())
                 .build())
                 .toObservable()
                 .toBlocking()
@@ -94,9 +98,9 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(new RestfitRequest.Builder()
+        RestfitResponse response = client.call(client.requestBuilder()
                 .method("GET")
-                .url(server.getUrl("/hello"))
+                .url(server.url("/hello").url())
                 .build())
                 .toObservable()
                 .toBlocking()
@@ -115,9 +119,9 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(new RestfitRequest.Builder()
+        RestfitResponse response = client.call(client.requestBuilder()
                 .method("GET")
-                .url(server.getUrl("/hello"))
+                .url(server.url("/hello").url())
                 .build())
                 .toObservable()
                 .toBlocking()
@@ -136,9 +140,9 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(new RestfitRequest.Builder()
+        RestfitResponse response = client.call(client.requestBuilder()
                 .method("GET")
-                .url(server.getUrl("/hello"))
+                .url(server.url("/hello").url())
                 .build())
                 .toObservable()
                 .toBlocking()
@@ -157,9 +161,9 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(new RestfitRequest.Builder()
+        RestfitResponse response = client.call(client.requestBuilder()
                 .method("GET")
-                .url(server.getUrl("/hello"))
+                .url(server.url("/hello").url())
                 .build())
                 .toObservable()
                 .toBlocking()
@@ -178,9 +182,9 @@ public class RestfitHurlStackTest {
                 .setHeader("X-Runtime", 42)
                 .setBody("hello, world!"));
 
-        RestfitResponse response = client.call(new RestfitRequest.Builder()
+        RestfitResponse response = client.call(client.requestBuilder()
                 .method("GET")
-                .url(server.getUrl("/hello"))
+                .url(server.url("/hello").url())
                 .build())
                 .toObservable()
                 .toBlocking()
@@ -202,9 +206,9 @@ public class RestfitHurlStackTest {
         JsonObject json = new JsonObject();
         json.addProperty("foo", "bar");
 
-        client.call(new RestfitRequest.Builder()
+        client.call(client.requestBuilder()
                 .method("POST")
-                .url(server.getUrl("/hello"))
+                .url(server.url("/hello").url())
                 .body(new RestfitJsonRequestBody(json))
                 .build())
                 .toObservable()
@@ -218,6 +222,27 @@ public class RestfitHurlStackTest {
         assertThat(request.getHeader("content-type"), is("application/json"));
         assertThat(request.getHeader("content-length"), is(String.valueOf(sizeOfString(json.toString()))));
         assertThat(request.getBody().readString(DEFAULT_ENCODING), is(json.toString()));
+    }
+
+    @Test
+    public void testTimeout() throws Exception {
+        server.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody("hello, world!")
+                .throttleBody(1, 100, TimeUnit.MILLISECONDS));
+
+        TestSubscriber<RestfitResponse> testSubscriber = TestSubscriber.create();
+
+        client.call(client.requestBuilder()
+                .method("POST")
+                .url(server.url("/hello").url())
+                .connectTimeoutMillis(1)
+                .readTimeoutMillis(1)
+                .build())
+                .subscribe(testSubscriber);
+
+        testSubscriber.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        testSubscriber.assertError(RestfitTimeoutException.class);
     }
 
     int sizeOfString(String s) {

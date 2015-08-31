@@ -1,5 +1,7 @@
 package com.cookpad.android.restfit.test;
 
+import com.cookpad.android.restfit.RestfitClient;
+import com.cookpad.android.restfit.RestfitHurlStack;
 import com.cookpad.android.restfit.RestfitRequest;
 import com.cookpad.android.restfit.RestfitResponse;
 
@@ -14,11 +16,16 @@ import static org.hamcrest.Matchers.*;
 @RunWith(RobolectricTestRunner.class)
 public class RestfitResponseTest {
 
+    RestfitClient client = new RestfitClient.Builder()
+            .userAgent("RestfitTest/1.0")
+            .httpStack(new RestfitHurlStack())
+            .build();
+
     RestfitResponse a, b, c;
 
     @Before
     public void setUp() throws Exception {
-        RestfitRequest r = new RestfitRequest.Builder()
+        RestfitRequest r = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com/")
                 .header("x-foo", "bar")
