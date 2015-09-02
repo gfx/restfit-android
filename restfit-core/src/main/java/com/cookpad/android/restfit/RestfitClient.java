@@ -14,6 +14,12 @@ import rx.SingleSubscriber;
 
 public class RestfitClient {
 
+
+    static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(2);
+
+    static final int DEFAULT_READ_TIMEOUT_MILLIS = (int) TimeUnit.SECONDS.toMillis(10);
+
+
     final boolean debug;
 
     final Uri endpoint;
@@ -24,16 +30,18 @@ public class RestfitClient {
 
     final ExecutorService executorService;
 
-    final int defaultConnectTimeoutMillis = (int) TimeUnit.SECONDS.toMillis(2);
+    final int connectTimeoutMillis;
 
-    final int defaultReadTimeoutMillis = (int) TimeUnit.SECONDS.toMillis(10);
+    final int readTimeoutMillis;
 
     RestfitClient(Builder builder) {
+        debug = builder.debug;
         endpoint = builder.endpoint;
         headers = builder.requestHeaders;
         httpStack = builder.httpStack;
         executorService = builder.executorService;
-        debug = builder.debug;
+        connectTimeoutMillis = builder.connectTimeoutMillis;
+        readTimeoutMillis = builder.readTimeoutMillis;
     }
 
     @NonNull
@@ -60,8 +68,8 @@ public class RestfitClient {
     @NonNull
     public RestfitRequest.Builder requestBuilder() {
         RestfitRequest.Builder b = new RestfitRequest.Builder(this)
-                .connectTimeoutMillis(defaultConnectTimeoutMillis)
-                .readTimeoutMillis(defaultReadTimeoutMillis)
+                .connectTimeoutMillis(connectTimeoutMillis)
+                .readTimeoutMillis(readTimeoutMillis)
                 .headers(headers);
 
         if (endpoint != null) {
@@ -82,6 +90,10 @@ public class RestfitClient {
         RestfitHttpStack httpStack;
 
         ExecutorService executorService;
+
+        int connectTimeoutMillis = DEFAULT_CONNECT_TIMEOUT_MILLIS;
+
+        int readTimeoutMillis = DEFAULT_READ_TIMEOUT_MILLIS;
 
         public Builder endpoint(@NonNull String endpoint) {
             return endpoint(Uri.parse(endpoint));
@@ -108,6 +120,26 @@ public class RestfitClient {
 
         public Builder debug(boolean debug) {
             this.debug = debug;
+            return this;
+        }
+
+        public Builder setConnectTimeout(long time, TimeUnit unit) {
+            assert time >= 0;
+            long millis = unit.toMillis(time);
+            assert millis < Integer.MAX_VALUE;
+
+            this.connectTimeoutMillis = (int) millis;
+
+            return this;
+        }
+
+        public Builder setReadTimeout(long time, TimeUnit unit) {
+            assert time >= 0;
+            long millis = unit.toMillis(time);
+            assert millis < Integer.MAX_VALUE;
+
+            this.readTimeoutMillis = (int) millis;
+
             return this;
         }
 
