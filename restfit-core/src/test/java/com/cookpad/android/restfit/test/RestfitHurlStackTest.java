@@ -245,6 +245,25 @@ public class RestfitHurlStackTest {
         testSubscriber.assertError(RestfitTimeoutException.class);
     }
 
+    //@Test
+    public void testUnknownHost() throws Exception {
+        server.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody("hello, world!")
+                .throttleBody(1, 100, TimeUnit.MILLISECONDS));
+
+        TestSubscriber<RestfitResponse> testSubscriber = TestSubscriber.create();
+
+        client.requestBuilder()
+                .method("POST")
+                .url("http://not-a-valid-host/hello")
+                .toSingle()
+                .subscribe(testSubscriber);
+
+        testSubscriber.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        testSubscriber.assertError(RestfitTimeoutException.class);
+    }
+
     int sizeOfString(String s) {
         return s.getBytes(DEFAULT_ENCODING).length;
     }
