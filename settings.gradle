@@ -1,1 +1,1 @@
-include ':example', ':restfit-core', ':restfit-okhttp'
+include ':example', ':restfit-core', ':restfit-okhttp', ':restfit-spec'

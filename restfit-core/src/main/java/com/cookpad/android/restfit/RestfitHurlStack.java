@@ -2,7 +2,6 @@ package com.cookpad.android.restfit;
 
 import com.cookpad.android.restfit.exception.RestfitRequestException;
 import com.cookpad.android.restfit.exception.RestfitRuntimeException;
-import com.cookpad.android.restfit.exception.RestfitTimeoutException;
 
 import android.support.annotation.NonNull;
 
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +29,7 @@ public class RestfitHurlStack implements RestfitHttpStack {
         return Single.create(new Single.OnSubscribe<RestfitResponse>() {
             @Override
             public void call(SingleSubscriber<? super RestfitResponse> subscriber) {
-                HttpURLConnection conn = null;
+                HttpURLConnection conn;
                 try {
                     conn = connect(request);
 
@@ -51,9 +49,8 @@ public class RestfitHurlStack implements RestfitHttpStack {
                     }
 
                     // wait for a response
-                    InputStream in;
-
                     int statusCode;
+                    InputStream in;
                     try {
                         statusCode = conn.getResponseCode();
                         in = statusCode < 400 ? conn.getInputStream() : conn.getErrorStream();
@@ -73,9 +70,6 @@ public class RestfitHurlStack implements RestfitHttpStack {
                             .body(new RestfitResponseBody(request, in))
                             .build();
                     subscriber.onSuccess(response);
-
-                } catch (SocketTimeoutException e) {
-                    subscriber.onError(new RestfitTimeoutException(request, e));
                 } catch (IOException e) {
                     subscriber.onError(new RestfitRequestException(request, e));
                 }

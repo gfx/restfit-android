@@ -5,7 +5,6 @@ import com.cookpad.android.restfit.RestfitRequest;
 import com.cookpad.android.restfit.RestfitResponse;
 import com.cookpad.android.restfit.RestfitResponseBody;
 import com.cookpad.android.restfit.exception.RestfitRequestException;
-import com.cookpad.android.restfit.exception.RestfitTimeoutException;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -18,7 +17,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -62,8 +60,6 @@ public class RestfitOkHttpStack implements RestfitHttpStack {
                             .headers(parseHeaders(response.headers()))
                             .body(parseBody(request, response.body()))
                             .build());
-                } catch (SocketTimeoutException e) {
-                    subscriber.onError(new RestfitTimeoutException(request, e));
                 } catch (IOException e) {
                     subscriber.onError(new RestfitRequestException(request, e));
                 }
