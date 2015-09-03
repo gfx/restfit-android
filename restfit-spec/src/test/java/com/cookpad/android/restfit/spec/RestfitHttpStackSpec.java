@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.cookpad.android.restfit.RestfitClient;
 import com.cookpad.android.restfit.RestfitHttpStack;
 import com.cookpad.android.restfit.RestfitHurlStack;
-import com.cookpad.android.restfit.RestfitJsonRequestBody;
+import com.cookpad.android.restfit.RestfitRequestJsonBody;
 import com.cookpad.android.restfit.RestfitResponse;
 import com.cookpad.android.restfit.exception.RestfitRequestException;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -232,7 +232,7 @@ public class RestfitHttpStackSpec {
         client.requestBuilder()
                 .method("POST")
                 .url(server.url("/hello").url())
-                .body(new RestfitJsonRequestBody(json))
+                .body(new RestfitRequestJsonBody(json))
                 .toSingle()
                 .toObservable()
                 .toBlocking()
@@ -258,7 +258,7 @@ public class RestfitHttpStackSpec {
         client.requestBuilder()
                 .method("POST")
                 .url(server.url("/hello").url())
-                .body(new RestfitJsonRequestBody(json))
+                .body(new RestfitRequestJsonBody(json))
                 .toSingle()
                 .toObservable()
                 .toBlocking()

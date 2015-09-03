@@ -4,9 +4,9 @@ import com.google.gson.JsonObject;
 
 import com.cookpad.android.restfit.RestfitClient;
 import com.cookpad.android.restfit.RestfitHurlStack;
-import com.cookpad.android.restfit.RestfitJsonRequestBody;
 import com.cookpad.android.restfit.RestfitQueryStringBuilder;
 import com.cookpad.android.restfit.RestfitRequest;
+import com.cookpad.android.restfit.RestfitRequestJsonBody;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -133,7 +133,7 @@ public class RestfitRequestTest {
         RestfitRequest r = client.requestBuilder()
                 .method("GET")
                 .url("http://example.com/")
-                .body(new RestfitJsonRequestBody(json))
+                .body(new RestfitRequestJsonBody(json))
                 .build();
 
         assertThat(r.getHeaders().get("content-type"), is(notNullValue()));

@@ -9,13 +9,13 @@ import android.support.annotation.NonNull;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class RestfitJsonRequestBody implements RestfitRequestBody {
+public class RestfitRequestJsonBody implements RestfitRequestBody {
 
     static String CONTENT_TYPE_VALUE = "application/json";
 
     byte[] content;
 
-    public RestfitJsonRequestBody(JsonElement json) {
+    public RestfitRequestJsonBody(JsonElement json) {
         content = json.toString().getBytes(RestfitUtils.DEFAULT_ENCODING);
     }
 
