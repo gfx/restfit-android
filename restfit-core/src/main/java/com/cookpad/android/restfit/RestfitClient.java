@@ -49,6 +49,10 @@ public class RestfitClient {
         return headers.get(RestfitHttpHeaders.KEY_USER_AGENT);
     }
 
+    public RestfitHttpStack getHttpStack() {
+        return httpStack;
+    }
+
     @NonNull
     public Single<RestfitResponse> call(@NonNull final RestfitRequest request) {
 

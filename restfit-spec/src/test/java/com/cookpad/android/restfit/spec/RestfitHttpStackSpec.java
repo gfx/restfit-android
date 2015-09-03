@@ -8,15 +8,12 @@ import com.cookpad.android.restfit.RestfitHurlStack;
 import com.cookpad.android.restfit.RestfitJsonRequestBody;
 import com.cookpad.android.restfit.RestfitResponse;
 import com.cookpad.android.restfit.exception.RestfitRequestException;
-import com.cookpad.android.restfit.okhttp.RestfitOkHttpStack;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.ParameterizedRobolectricTestRunner;
@@ -30,12 +27,13 @@ import rx.observers.TestSubscriber;
 import static com.cookpad.android.restfit.internal.RestfitUtils.DEFAULT_ENCODING;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assume.assumeThat;
 
 @RunWith(ParameterizedRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class HttpRestfitHttpStackSpec {
+public class RestfitHttpStackSpec {
 
-    MockWebServer server;
+    final MockWebServer server = new MockWebServer();
 
     final RestfitClient client;
 
@@ -44,24 +42,7 @@ public class HttpRestfitHttpStackSpec {
         RestfitHttpStack createInstance();
     }
 
-    public static class HurlStackFactory implements HttpStackFactory {
-
-        @Override
-        public RestfitHttpStack createInstance() {
-            return new RestfitHurlStack();
-        }
-    }
-
-    public static class OkHttpStackFactory implements HttpStackFactory {
-
-        @Override
-        public RestfitHttpStack createInstance() {
-            return new RestfitOkHttpStack(new OkHttpClient());
-        }
-    }
-
-
-    @ParameterizedRobolectricTestRunner.Parameters
+    @ParameterizedRobolectricTestRunner.Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> getParameters() {
         Object[][] parameters = new Object[][]{
                 {HurlStackFactory.class.getName()},
@@ -70,7 +51,7 @@ public class HttpRestfitHttpStackSpec {
         return Arrays.asList(parameters);
     }
 
-    public HttpRestfitHttpStackSpec(String factoryClassName) throws Exception {
+    public RestfitHttpStackSpec(String factoryClassName) throws Exception {
         // XXX: hack to avoid class loader mismatching problems!
         Class<?> factoryClass = Class.forName(factoryClassName);
         HttpStackFactory httpStackFactory = (HttpStackFactory) factoryClass.newInstance();
@@ -83,7 +64,6 @@ public class HttpRestfitHttpStackSpec {
 
     @Before
     public void setUp() throws Exception {
-        server = new MockWebServer();
         server.start();
     }
 
@@ -292,10 +272,10 @@ public class HttpRestfitHttpStackSpec {
         assertThat(request.getBody().readString(DEFAULT_ENCODING), is(json.toString()));
     }
 
-
-    @Ignore
     @Test
     public void testTimeout() throws Exception {
+        assumeThat(client.getHttpStack(), is(instanceOf(RestfitHurlStack.class)));
+
         server.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
                 .setBody("hello, world!")
@@ -318,7 +298,7 @@ public class HttpRestfitHttpStackSpec {
         assertThat(e.isTimeout(), is(true));
     }
 
-    //@Test
+    @Test
     public void testUnknownHost() throws Exception {
         server.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
@@ -328,13 +308,14 @@ public class HttpRestfitHttpStackSpec {
         TestSubscriber<RestfitResponse> testSubscriber = TestSubscriber.create();
 
         client.requestBuilder()
-                .method("POST")
+                .method("GET")
                 .url("http://not-a-valid-host/hello")
                 .toSingle()
                 .subscribe(testSubscriber);
 
         testSubscriber.awaitTerminalEvent(1, TimeUnit.SECONDS);
 
+        testSubscriber.assertError(RestfitRequestException.class);
         RestfitRequestException e = (RestfitRequestException) testSubscriber.getOnErrorEvents().get(0);
         assertThat(e.isUnknownHost(), is(true));
     }
