@@ -12,12 +12,14 @@ android {
     }
 
     lintOptions {
+        disable 'InvalidPackage' // okio
         disable 'Assert'
     }
 }
 
 dependencies {
     compile 'com.android.support:support-annotations:23.0.0'
+    compile 'com.squareup.okio:okio:1.6.0'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'com.google.code.gson:gson:2.3.1'
     testCompile 'org.robolectric:robolectric:3.0'

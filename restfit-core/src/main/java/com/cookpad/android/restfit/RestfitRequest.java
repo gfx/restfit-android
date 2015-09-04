@@ -7,9 +7,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 
+import okio.BufferedSink;
 import rx.Single;
 
 public class RestfitRequest extends RestfitBaseModel {
@@ -76,8 +76,8 @@ public class RestfitRequest extends RestfitBaseModel {
         return readTimeoutMillis;
     }
 
-    public void writeBodyTo(OutputStream out) throws IOException {
-        body.writeTo(out);
+    public void writeBodyTo(@NonNull BufferedSink sink) throws IOException {
+        body.writeTo(sink);
     }
 
     public static class Builder {

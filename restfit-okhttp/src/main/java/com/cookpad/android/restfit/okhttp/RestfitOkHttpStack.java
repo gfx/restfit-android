@@ -78,7 +78,7 @@ public class RestfitOkHttpStack implements RestfitHttpStack {
 
                 @Override
                 public void writeTo(BufferedSink sink) throws IOException {
-                    request.getBody().writeTo(sink.outputStream());
+                    request.getBody().writeTo(sink);
                 }
             };
         } else {

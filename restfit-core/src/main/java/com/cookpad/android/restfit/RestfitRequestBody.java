@@ -3,7 +3,8 @@ package com.cookpad.android.restfit;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
-import java.io.OutputStream;
+
+import okio.BufferedSink;
 
 public interface RestfitRequestBody {
 
@@ -20,5 +21,5 @@ public interface RestfitRequestBody {
     /**
      * Writes the content body to {@param out}.
      */
-    void writeTo(@NonNull OutputStream out) throws IOException;
+    void writeTo(@NonNull BufferedSink out) throws IOException;
 }

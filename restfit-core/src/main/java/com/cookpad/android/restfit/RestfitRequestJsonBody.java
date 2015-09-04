@@ -7,7 +7,8 @@ import com.cookpad.android.restfit.internal.RestfitUtils;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
-import java.io.OutputStream;
+
+import okio.BufferedSink;
 
 public class RestfitRequestJsonBody implements RestfitRequestBody {
 
@@ -31,7 +32,7 @@ public class RestfitRequestJsonBody implements RestfitRequestBody {
     }
 
     @Override
-    public void writeTo(@NonNull OutputStream out) throws IOException {
+    public void writeTo(@NonNull BufferedSink out) throws IOException {
         out.write(content);
     }
 }

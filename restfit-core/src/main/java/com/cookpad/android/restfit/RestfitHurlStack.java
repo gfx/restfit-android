@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okio.BufferedSink;
+import okio.Okio;
 import rx.Single;
 import rx.SingleSubscriber;
 
@@ -44,7 +46,8 @@ public class RestfitHurlStack implements RestfitHttpStack {
                     if (request.hasBody()) {
                         conn.setDoOutput(true);
                         OutputStream out = conn.getOutputStream();
-                        request.writeBodyTo(out);
+                        BufferedSink sink = Okio.buffer(Okio.sink(out));
+                        request.writeBodyTo(sink);
                         out.close();
                     }
 
