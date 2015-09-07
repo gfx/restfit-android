@@ -26,7 +26,7 @@ public class RestfitRequest extends RestfitBaseModel {
 
     final int readTimeoutMillis;
 
-    RestfitRequest(Builder builder) {
+    RestfitRequest(Builder builder) throws IOException {
         method = builder.method;
         url = buildUrl(builder.url, builder.queryString);
         headers = builder.headers;
@@ -168,11 +168,11 @@ public class RestfitRequest extends RestfitBaseModel {
 
         @NonNull
         public Single<RestfitResponse> toSingle() {
-            return client.call(build());
+            return client.call(this);
         }
 
         @NonNull
-        public RestfitRequest build() {
+        public RestfitRequest build() throws IOException {
             return new RestfitRequest(this);
         }
     }

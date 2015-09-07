@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 
 import com.cookpad.android.restfit.RestfitClient;
 import com.cookpad.android.restfit.RestfitHttpStack;
-import com.cookpad.android.restfit.RestfitHurlStack;
 import com.cookpad.android.restfit.RestfitRequestJsonBody;
 import com.cookpad.android.restfit.RestfitResponse;
 import com.cookpad.android.restfit.exception.RestfitRequestException;
@@ -22,12 +21,12 @@ import org.robolectric.annotation.Config;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import okio.Buffer;
 import rx.observers.TestSubscriber;
 
 import static com.cookpad.android.restfit.internal.RestfitUtils.DEFAULT_ENCODING;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assume.assumeThat;
 
 @RunWith(ParameterizedRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
@@ -274,24 +273,23 @@ public class RestfitHttpStackSpec {
 
     @Test
     public void testTimeout() throws Exception {
-        assumeThat(client.getHttpStack(), is(instanceOf(RestfitHurlStack.class)));
-
+        int responseBodySize = 10 * 1024 * 1024; // 10 MiB
         server.enqueue(new MockResponse()
                 .setStatus("HTTP/1.1 200 OK")
-                .setBody("hello, world!")
-                .throttleBody(1, 100, TimeUnit.MILLISECONDS));
+                .setBody(new Buffer().write(new byte[responseBodySize]))
+                .throttleBody(1, 1, TimeUnit.SECONDS));
 
         TestSubscriber<RestfitResponse> testSubscriber = TestSubscriber.create();
 
         client.requestBuilder()
                 .method("GET")
-                .url(server.url("/hello").url())
+                .url(server.url("/hello-timeout").url())
                 .connectTimeoutMillis(1)
                 .readTimeoutMillis(1)
                 .toSingle()
                 .subscribe(testSubscriber);
 
-        testSubscriber.awaitTerminalEvent(1, TimeUnit.SECONDS);
+        testSubscriber.awaitTerminalEvent(4, TimeUnit.SECONDS);
 
         testSubscriber.assertError(RestfitRequestException.class);
         RestfitRequestException e = (RestfitRequestException) testSubscriber.getOnErrorEvents().get(0);

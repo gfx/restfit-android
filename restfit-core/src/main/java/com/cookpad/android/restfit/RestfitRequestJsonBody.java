@@ -21,7 +21,7 @@ public class RestfitRequestJsonBody implements RestfitRequestBody {
 
     @NonNull
     @Override
-    public RestfitHttpHeaders headers() {
+    public RestfitHttpHeaders headers() throws IOException {
         RestfitHttpHeaders headers = new RestfitHttpHeaders();
 
         headers.put(HTTP_CONTENT_TYPE, CONTENT_TYPE_VALUE);

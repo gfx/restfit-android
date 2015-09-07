@@ -1,10 +1,12 @@
 package com.cookpad.android.restfit;
 
+import com.cookpad.android.restfit.exception.RestfitRequestBuilderException;
 import com.cookpad.android.restfit.internal.RestfitUtils;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +56,7 @@ public class RestfitClient {
     }
 
     @NonNull
-    public Single<RestfitResponse> call(@NonNull final RestfitRequest request) {
+    public Single<RestfitResponse> call(@NonNull final RestfitRequest.Builder requestBuilder) {
 
         return Single.create(new Single.OnSubscribe<RestfitResponse>() {
             @Override
@@ -62,6 +64,13 @@ public class RestfitClient {
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
+                        RestfitRequest request;
+                        try {
+                            request = requestBuilder.build();
+                        } catch (IOException e) {
+                            subscriber.onError(new RestfitRequestBuilderException(requestBuilder, e));
+                            return;
+                        }
                         httpStack.perform(request).subscribe(subscriber);
                     }
                 });

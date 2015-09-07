@@ -15,7 +15,7 @@ public interface RestfitRequestBody {
      * Returns HTTP headers that includes <code>Content-Type</code>, <code>Content-Length</code>.
      */
     @NonNull
-    RestfitHttpHeaders headers();
+    RestfitHttpHeaders headers() throws IOException;
 
     /**
      * Writes the content body to {@param out}.

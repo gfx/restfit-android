@@ -82,18 +82,17 @@ public class RestfitClientTest {
                 })
                 .build();
 
-        RestfitRequest request = client.requestBuilder()
+        final RestfitRequest.Builder requestBuilder = client.requestBuilder()
                 .method("GET")
-                .url("http://example.com/")
-                .build();
+                .url("http://example.com/");
 
         response = new RestfitResponse.Builder()
-                .request(request)
+                .request(requestBuilder.build())
                 .build();
 
         TestSubscriber<RestfitResponse> testSubscriber = TestSubscriber.create();
 
-        client.call(request).subscribe(testSubscriber);
+        client.call(requestBuilder).subscribe(testSubscriber);
 
         testSubscriber.awaitTerminalEvent(10, TimeUnit.MILLISECONDS);
 
