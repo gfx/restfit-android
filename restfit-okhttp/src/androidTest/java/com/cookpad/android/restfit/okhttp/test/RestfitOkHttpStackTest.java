@@ -8,6 +8,7 @@ import com.cookpad.android.restfit.internal.RestfitUtils;
 import com.cookpad.android.restfit.okhttp.RestfitOkHttpStack;
 import com.cookpad.android.restfit.okhttp.RestfitRequestOkHttpBody;
 import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -89,6 +90,45 @@ public class RestfitOkHttpStackTest {
         assertThat(request.getPath(), is("/hello"));
         assertThat(request.getHeader("content-type"), is("application/json; charset=utf-8"));
         assertThat(request.getBody().readString(RestfitUtils.DEFAULT_ENCODING), is(json.toString()));
+    }
+
+    @Test
+    public void testRequestMultipartBody() throws Exception {
+        server.enqueue(new MockResponse()
+                .setStatus("HTTP/1.1 200 OK")
+                .setBody("hello, world!"));
+
+        JsonObject json = new JsonObject();
+        json.addProperty("foo", "bar");
+
+        RequestBody a = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        RequestBody b = RequestBody.create(MediaType.parse("application/json"), json.toString());
+        RequestBody c = RequestBody.create(MediaType.parse("application/json"), json.toString());
+
+        RequestBody body = new MultipartBuilder("---")
+                .addFormDataPart("foo", "foo.json", a)
+                .addFormDataPart("bar", "bar.json", b)
+                .addFormDataPart("baz", "baz.json", c)
+                .build();
+
+        client.requestBuilder()
+                .method("POST")
+                .url(server.url("/hello").url())
+                .body(new RestfitRequestOkHttpBody(body))
+                .toSingle()
+                .toObservable()
+                .toBlocking()
+                .single();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getMethod(), is("POST"));
+        assertThat(request.getPath(), is("/hello"));
+        assertThat(request.getHeader("content-type"), is("multipart/mixed; boundary=---"));
+        assertThat(request.getBody().readString(RestfitUtils.DEFAULT_ENCODING),
+                is(startsWith(
+                        "-----\r\nContent-Disposition: form-data; name=\"foo\"; filename=\"foo.json\"\r\nContent-Type: application/json; charset=utf-8\r\nContent-Length: 13\r\n\r\n"
+                                + json.toString())));
     }
 
 }
